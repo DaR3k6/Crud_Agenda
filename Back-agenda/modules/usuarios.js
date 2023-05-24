@@ -13,40 +13,27 @@ usuario.use(cors()); //Permite el acceso de otras direciones IP distintas a mi s
 usuario.options("*", cors()); //Configura las IP admitidas por cors, * significa que las acepta todas
 
 //Codificamos los verbos HTTP (CRUD tipico)
-const campoUsuario = ["nombre", "apellido", "email", "password"];
+const campoUsuario = ["NOMBRE", "APELLIDO", "EMAIL", "PASSWORD"];
 
+//VERBO TRAER TODO LOS CAMPOS
 usuario.get("/usuarios", async (req, res) => {
   try {
-    conex.query(
-      "SELECT idUsuario,nombre,email FROM usuario; ",
-      (error, respuesta) => {
-        console.log(respuesta);
-        res.send(respuesta);
-      }
-    );
+    conex.query("SELECT * FROM usuario; ", (error, respuesta) => {
+      console.log(respuesta);
+      res.send(respuesta);
+    });
   } catch (error) {
     //throw error;
     console.log(error);
   }
 });
 
-/* //Verbo GET LISTAR
-usuario.get("/usuarios", (req, res) => {
-  conex.query("SELECT * FROM usuario", (error, respuesta) => {
-    if (error) {
-      throw error;
-    } else {
-      res.send(respuesta);
-    }
-  });
-}) */
-
 //Verbo POST INSERTAR USUARIO
 usuario.post("/usuarios", async (req, res) => {
   try {
     let data = {};
     campoUsuario.forEach(campo => {
-      if (campo === "constraseña") {
+      if (campo === "PASSWORD") {
         data[campo] = bycript.hashSync(req.body[campo]);
       } else {
         data[campo] = req.body[campo];
@@ -65,10 +52,10 @@ usuario.post("/usuarios", async (req, res) => {
 //Login de Usuario
 usuario.post("/login", async (req, res) => {
   try {
-    const email = req.body["email"];
-    const constraseña = req.body["constraseña"]; // Utilizamos el nombre correcto
+    const email = req.body["EMAIL"];
+    const password = req.body["PASSWORD"]; // Utilizamos el nombre correcto
     //Validamos que llegen los datos completos
-    if (!email || !constraseña) {
+    if (!email || !password) {
       console.log("Debe enviar los datos completos");
     } else {
       conex.query(
@@ -77,7 +64,7 @@ usuario.post("/login", async (req, res) => {
         async (error, respuesta) => {
           if (
             respuesta.length == 0 ||
-            !(await bycript.compare(constraseña, respuesta[0].constraseña)) // Utilizamos el nombre correcto
+            !(await bycript.compare(password, respuesta[0].PASSWORD)) // Utilizamos el nombre correcto
           ) {
             // res.send({ estado: true, nombre: "Juanito" });
             //res.sendStatus(200);
@@ -98,43 +85,6 @@ usuario.post("/login", async (req, res) => {
     console.log("Hay un error en la conexión con el servidor");
     res.status(404).send(error);
   }
-});
-
-//Verbo PUT ACUTALIZAR
-usuario.put("/usuarios/:idUsuario", (req, res) => {
-  let id = req.params.idUsuario;
-  let data = {};
-  campoUsuario.forEach(campo => {
-    if (req.body[campo]) {
-      data[campo] = req.body[campo];
-    }
-  });
-  conex.query(
-    "UPDATE usuario SET ? WHERE idUsuario = ?",
-    [data, id],
-    (error, respuesta) => {
-      if (error) {
-        console.log(error);
-      } else {
-        res.status(201).send(respuesta);
-      }
-    }
-  );
-});
-//Verbo DELETE ELIMINAR
-usuario.delete("/usuarios/:idUsuario", (req, res) => {
-  let id = req.params.idUsuario;
-  conex.query(
-    "DELETE FROM usuario WHERE idUsuario = ?",
-    id,
-    (error, respuesta) => {
-      if (error) {
-        console.log(error);
-      } else {
-        res.status(201).send(respuesta);
-      }
-    }
-  );
 });
 
 module.exports = usuario;
