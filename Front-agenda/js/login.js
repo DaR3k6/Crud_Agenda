@@ -1,8 +1,8 @@
 const urlApi = "http://localhost:4000/";
-//dom
+//DOM
 const btnEnviar = document.querySelector("#btnEnviar");
 
-btnEnviar.addEventListener("click", (e) => {
+btnEnviar.addEventListener("click", e => {
   e.preventDefault();
   let sesion = {
     EMAIL: email.value,
@@ -13,13 +13,12 @@ btnEnviar.addEventListener("click", (e) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(sesion),
   })
-    .then((Response) => {
-      return Response.text();
+    .then(response => {
+      return response.text();
     })
-    .then((data) => {
-      if (data == "true") {
-        window.location =
-          "http://127.0.0.1:5501/Crud_Agenda/Front-agenda/index.html";
+    .then(data => {
+      if (data === "true") {
+        window.location = "http://127.0.0.1:5500/dashboard.html";
       } else {
         Swal.fire({
           icon: "error",

@@ -47,7 +47,7 @@ img {
 
 /* Hero Section */
 header.hero {
-  background: url(../assets/trabajo.jpg) no-repeat center center fixed;
+  background: url(../assets/trabajo.png) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
