@@ -5,7 +5,7 @@ const container1 = document.querySelector("#card1");
 const container2 = document.querySelector("#card2");
 const container3 = document.querySelector("#card3");
 
-fetch(urlApi + "citas")
+fetch(urlApi + "contactos")
   .then(response => response.json())
   .then(data => {
     data.forEach(item => {
@@ -13,11 +13,17 @@ fetch(urlApi + "citas")
         <div class="card mt-3" style="width: 22rem;">
          <h2 class = "card-title flex-end" >${item.ID}</h2>
           <div class="card-body">        
-           <h5 class="card-subtitle mb-5 text-body-dark">FECHA CITA: ${item.FECHA}</h5>
-            <p class="card-text">ASIGNACION DE CITA : ${item.DESCRIPCION}</p>
-            </br>
+           <h2 class="card-subtitle mb-2 text-body-dark">${
+             item.NOMBRE + item.APELLIDO1 + item.APELLIDO2
+           }</h3>
+           <h4 class="card-text">NUMERO DE TELEFONO: ${item.TELEFONO}</h4>
+           <h5 class="card-text">GMAIL: ${item.EMAIL}</h5>
+           <h5 class="card-text">FECHA NACIMIENTO: ${
+             item.FECHANACIMIENTO
+           }</h5>         
+           </br> 
             <button type="button" class="btn btn-danger" id="btnBorrar">BORRAR</button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editarCita"  id="btnEditar">EDITAR</button>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editarContacto"  id="btnEditar">EDITAR</button>
           </div>
         </div>
       `;
@@ -34,17 +40,21 @@ fetch(urlApi + "citas")
   });
 
 //CREO EL API INSERTAR LA CITA
-const btnAgendar = document.querySelector("#btnAgendar");
-btnAgendar.addEventListener("click", e => {
+const btnContactar = document.querySelector("#btnContactar");
+btnContactar.addEventListener("click", e => {
   e.preventDefault();
-  let registroCita = {
-    FECHA: fecha.value,
-    DESCRIPCION: description.value,
+  let registroContacto = {
+    NOMBRE: nombreContacto.value,
+    APELLIDO1: apellidoContacto.value,
+    APELLIDO2: apellido2Contacto.value,
+    TELEFONO: telefono.value,
+    EMAIL: emailContacto.value,
+    FECHANACIMIENTO: fechaContacto.value,
   };
-  fetch(urlApi + "citas", {
+  fetch(urlApi + "contactos", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(registroCita),
+    body: JSON.stringify(registroContacto),
   })
     .then(response => {
       return response.text();
@@ -58,6 +68,7 @@ btnAgendar.addEventListener("click", e => {
           showConfirmButton: false,
           timer: 10000,
         });
+        location.reload();
       } else {
         Swal.fire({
           icon: "ERROR",
@@ -65,7 +76,6 @@ btnAgendar.addEventListener("click", e => {
           text: "PUEDE QUE LA CONEXION ESTE FALLADON!",
         });
       }
-      console.log(data);
     });
 });
 
@@ -83,12 +93,12 @@ on(document, "click", "#btnBorrar", e => {
   let fila = e.target.parentNode.parentNode;
   const id = fila.firstElementChild.innerHTML;
 
-  if (confirm("¿DESEA ELIMINAR ESTA CITA?") == true) {
-    fetch(urlApi + "citas/" + id, { method: "DELETE" })
+  if (confirm("¿DESEA ELIMINAR ESTE CONTACTO?") == true) {
+    fetch(urlApi + "contactos/" + id, { method: "DELETE" })
       .then(response => {
         return response.text();
       })
-      .then(data => {
+      .then(() => {
         if (data === "true") {
           Swal.fire({
             position: "top-center",
@@ -111,11 +121,15 @@ on(document, "click", "#btnEditar", e => {
     e.preventDefault();
 
     let editarCita = {
-      FECHA: fechaCita.value,
-      DESCRIPCION: descriptionCita.value,
+      NOMBRE: nombre.value,
+      APELLIDO1: apellido.value,
+      APELLIDO2: segundoApellido.value,
+      TELEFONO: telefonoContacto.value,
+      EMAIL: email.value,
+      FECHANACIMIENTO: fechaNacimiento.value,
     };
 
-    fetch(urlApi + "citas/" + id, {
+    fetch(urlApi + "contactos/" + id, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editarCita),

@@ -35,7 +35,7 @@ cita.post("/citas", async (req, res) => {
     });
     conex.query("INSERT INTO cita SET ?", data, (error, respuesta) => {
       console.log(`Registro correcta ${respuesta}`);
-      res.status(201).send(respuesta);
+      res.status(201).send(true);
     });
   } catch (error) {
     console.log(error);

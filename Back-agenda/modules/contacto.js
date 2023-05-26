@@ -24,7 +24,7 @@ const campoContacto = [
 contacto.get("/contactos", async (req, res) => {
   try {
     conex.query("SELECT * FROM contacto; ", (error, respuesta) => {
-      console.log(respuesta);
+      console.log("Trae los datos");
       res.send(respuesta);
     });
   } catch (error) {
@@ -42,7 +42,7 @@ contacto.post("/contactos", async (req, res) => {
     });
     conex.query("INSERT INTO contacto SET ?", data, (error, respuesta) => {
       console.log(`Registro correcta ${respuesta}`);
-      res.status(201).send(respuesta);
+      res.status(201).send(true);
     });
   } catch (error) {
     console.log(error);
@@ -52,11 +52,13 @@ contacto.post("/contactos", async (req, res) => {
 //Verbo DELETE ELIMINAR CITA
 contacto.delete("/contactos/:id", (req, res) => {
   let id = req.params.id;
-  conex.query("DELETE FROM contacto WHERE id = ?", id, (error, respuesta) => {
+  conex.query("DELETE FROM contacto WHERE id= ?", id, (error, respuesta) => {
     if (error) {
-      console.log(error);
+      console.log("Error al eliminar");
+      res.status(500).send(false);
     } else {
-      res.status(201).send(respuesta);
+      console.log("Elimina exitosamente");
+      res.status(200).send(true);
     }
   });
 });
@@ -65,9 +67,7 @@ contacto.put("/contactos/:id", (req, res) => {
   let id = req.params.id;
   let data = {};
   campoContacto.forEach(campo => {
-    if (req.body[campo]) {
-      data[campo] = req.body[campo];
-    }
+    data[campo] = req.body[campo];
   });
   conex.query(
     "UPDATE contacto SET ? WHERE id = ?",
@@ -75,8 +75,10 @@ contacto.put("/contactos/:id", (req, res) => {
     (error, respuesta) => {
       if (error) {
         console.log(error);
+        res.status(500).send(false);
       } else {
-        res.status(201).send(respuesta);
+        res.status(201).send(true);
+        console.log("Actualización exitosa");
       }
     }
   );
