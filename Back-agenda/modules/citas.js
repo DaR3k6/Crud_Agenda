@@ -17,7 +17,7 @@ const campoCita = ["FECHA", "DESCRIPCION"];
 cita.get("/citas", async (req, res) => {
   try {
     conex.query("SELECT * FROM cita; ", (error, respuesta) => {
-      console.log(respuesta);
+      console.log("Trae todos los datos");
       res.send(respuesta);
     });
   } catch (error) {
@@ -45,11 +45,13 @@ cita.post("/citas", async (req, res) => {
 //Verbo DELETE ELIMINAR CITA
 cita.delete("/citas/:id", (req, res) => {
   let id = req.params.id;
-  conex.query("DELETE FROM cita WHERE id = ?", id, (error, respuesta) => {
+  conex.query("DELETE FROM cita WHERE ID = ?", id, (error, respuesta) => {
     if (error) {
-      console.log(error);
+      console.log("Error al eliminar");
+      res.status(500).send(false);
     } else {
-      res.status(201).send(respuesta);
+      console.log("Elimina exitosamente");
+      res.status(200).send(true);
     }
   });
 });
@@ -58,9 +60,7 @@ cita.put("/citas/:id", (req, res) => {
   let id = req.params.id;
   let data = {};
   campoCita.forEach(campo => {
-    if (req.body[campo]) {
-      data[campo] = req.body[campo];
-    }
+    data[campo] = req.body[campo];
   });
   conex.query(
     "UPDATE cita SET ? WHERE id = ?",
@@ -68,8 +68,10 @@ cita.put("/citas/:id", (req, res) => {
     (error, respuesta) => {
       if (error) {
         console.log(error);
+        res.status(500).send(false);
       } else {
-        res.status(201).send(respuesta);
+        res.status(201).send(true);
+        console.log("Actualización exitosa");
       }
     }
   );

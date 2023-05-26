@@ -53,8 +53,7 @@ usuario.post("/usuarios", async (req, res) => {
 usuario.post("/login", async (req, res) => {
   try {
     const email = req.body["EMAIL"];
-    const password = req.body["PASSWORD"]; // Utilizamos el nombre correcto
-    //Validamos que llegen los datos completos
+    const password = req.body["PASSWORD"];
     if (!email || !password) {
       console.log("Debe enviar los datos completos");
     } else {
@@ -63,20 +62,16 @@ usuario.post("/login", async (req, res) => {
         [email],
         async (error, respuesta) => {
           if (
-            respuesta.length == 0 ||
-            !(await bycript.compare(password, respuesta[0].PASSWORD)) // Utilizamos el nombre correcto
+            respuesta.length === 0 ||
+            !(await bycript.compare(password, respuesta[0].PASSWORD))
           ) {
-            // res.send({ estado: true, nombre: "Juanito" });
-            //res.sendStatus(200);
             console.log(
               "El usuario y/o la clave ingresado no existen en la aplicación"
             );
             res.status(404).send(false);
           } else {
-            //Enviamos las variables al frontend para que cargue la página
-            console.log("BIENVENIDO AL SISTEMA DE INFORMACIÓN ");
+            console.log("BIENVENIDO AL SISTEMA DE INFORMACIÓN");
             res.status(200).send(true);
-            res.status(200).send(respuesta);
           }
         }
       );
