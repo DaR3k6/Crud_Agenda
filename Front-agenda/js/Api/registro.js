@@ -20,8 +20,14 @@ btnRegistro.addEventListener("click", e => {
     })
     .then(data => {
       if (data === "true") {
-        window.location = "http://127.0.0.1:5500/login.html";
-        console.log(data);
+        Swal.fire({
+          icon: "success",
+          title: "USUARIO REGISTRADO",
+          showConfirmButton: false,
+        });
+        setTimeout(() => {
+          window.location = "http://127.0.0.1:5500/login.html";
+        }, 1500);
       }
     });
 });

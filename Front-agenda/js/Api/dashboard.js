@@ -52,12 +52,13 @@ btnAgendar.addEventListener("click", e => {
     .then(data => {
       if (data === "true") {
         Swal.fire({
-          position: "top-center",
           icon: "success",
-          title: "Guardado Exitosamente",
+          title: "CITA GUARDADA",
           showConfirmButton: false,
-          timer: 10000,
         });
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
       } else {
         Swal.fire({
           icon: "ERROR",
@@ -83,25 +84,33 @@ on(document, "click", "#btnBorrar", e => {
   let fila = e.target.parentNode.parentNode;
   const id = fila.firstElementChild.innerHTML;
 
-  if (confirm("¿DESEA ELIMINAR ESTA CITA?") == true) {
-    fetch(urlApi + "citas/" + id, { method: "DELETE" })
-      .then(response => {
-        return response.text();
-      })
-      .then(data => {
-        if (data === "true") {
-          Swal.fire({
-            position: "top-center",
-            icon: "success",
-            title: "Borrado Existosamente",
-            showConfirmButton: false,
-            timer: 10000,
-          });
-        }
-        location.reload();
-      });
-  }
+  Swal.fire({
+    title: "DESEA ELIMIAR ESTA CITA?",
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "SI",
+    denyButtonText: `NO`,
+  }).then(result => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      fetch(urlApi + "citas/" + id, { method: "DELETE" })
+        .then(response => {
+          return response.text();
+        })
+        .then(data => {
+          if (data === "true") {
+            Swal.fire("BORRADO EXITOSAMENTE!", "", "success");
+          }
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        });
+    } else if (result.isDenied) {
+      Swal.fire("ERROR PARA BORRAR", "", "info");
+    }
+  });
 });
+//EDITAR
 const formularioEditar = document.querySelector("#formularioEditar");
 on(document, "click", "#btnEditar", e => {
   let fila = e.target.parentNode.parentNode;
@@ -126,13 +135,13 @@ on(document, "click", "#btnEditar", e => {
       .then(data => {
         if (data === "true") {
           Swal.fire({
-            position: "top-center",
             icon: "success",
-            title: "Editado Existosamente",
+            title: "EDITADO EXITOSAMENTE",
             showConfirmButton: false,
-            timer: 10000,
           });
-          location.reload();
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
         }
       });
   });

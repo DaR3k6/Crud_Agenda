@@ -18,13 +18,19 @@ btnEnviar.addEventListener("click", e => {
     })
     .then(data => {
       if (data === "true") {
-        window.location = "http://127.0.0.1:5500/dashboard.html";
+        Swal.fire({
+          icon: "success",
+          title: "INICIO DE SESION CORRECTAMENTE",
+          showConfirmButton: false,
+        });
+        setTimeout(() => {
+          window.location = "http://127.0.0.1:5500/dashboard.html";
+        }, 1500);
       } else {
         Swal.fire({
-          icon: "error",
+          icon: "ERROR",
           title: "Oops...",
-          text: "Something went wrong!",
-          footer: '<a href="">Why do I have this issue?</a>',
+          text: "VEREFIQUE BIEN LOS DATOS!",
         });
       }
     });
